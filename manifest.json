@@ -1,0 +1,24 @@
+{
+// SEE https://developer.chrome.com/extensions/manifest
+// Required
+"manifest_version": 2
+,"name":"Game made with RocketBoots"
+,"version": "0.0"
+
+// Recommended
+//,"default_locale":"en"
+,"description" : "Game made with RocketBoots"
+
+
+,"content_scripts": [
+    {
+      //"matches": ["https://ludumdare.com/*","http://ludumdare.com/*"],
+	  //"exclude_matches": ["https://ludumdare.com/compo/wp-admin/*","http://ludumdare.com/compo/wp-admin/*"],
+	  //"js": ["yourjs.js"]
+    }
+]
+  
+// Optional
+//,"author":"YOUR NAME"
+  
+}

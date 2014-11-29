@@ -1,0 +1,14 @@
+
+body {
+    /* background-color: #343; */
+    text-align: center;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+footer {
+	margin: 20em 0 5em 0;
+	color: #eee;
+}
+footer a {
+	color: white;
+}

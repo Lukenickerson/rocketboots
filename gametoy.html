@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Major Hammer - Indie Game for Gameboy Jam 3</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/gb.css" />
+	<!---<link rel="stylesheet" href="css/gb_realistic.css" />--->
+	<!--- <link rel="stylesheet" href="css/gb_2x.css" /> --->
+	<link rel="stylesheet" href="css/custom_gb.css" />
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+
+<!---
+<canvas id="gbScreen" width="160" height="144" class="size2"></canvas>
+<br />
+--->
+
+
+<!--- original source: http://jsfiddle.net/luken/L3qCJ/ --->
+
+
+
+<div class="gb">
+	<div class="cartridge">
+		<div class="branding">
+			<span class="brand">Netnindo</span>
+			<span class="product">GAME TOY</span>
+			<span class="tm">TM</span>
+		</div>
+		<div class="labelGroove">
+			<div class="label">
+				Major Hammer <span style="opacity:0.5">(Ep1-1)</span>
+			</div>
+		</div>
+	</div>
+	<div class="cartridgeHelp help">
+		Tap the cartridge to begin!
+	</div>
+	<div class="top">
+	
+	</div>
+    <div class="outScreen">
+		<div class="dotMatrix"><div>HTML5 canvas with javascript</div></div>
+		<div class="battery"><div>Battery</div></div>
+        <div class="inScreen">
+			<canvas id="gbScreen" width="160" height="144"></canvas>
+        </div>
+    </div>
+    <div class="branding">
+        <span class="brand">Netnindo</span>
+		<span class="product">GAME TOY</span>
+		<span class="tm">TM</span>
+    </div>
+	<!---
+	<div class="brandHelp help">
+		More information...
+	</div>
+	--->
+    <div class="dpad">
+        <button type="button" class="left">
+            <div>&#9664;</div>
+        </button>
+        <button type="button" class="up">
+            <div>&#9650;</div>
+        </button>
+        <button type="button" class="down">
+            <div>&#9660;</div>
+        </button>
+        <button type="button" class="right">
+            <div>&#9654;</div>
+        </button>
+    </div>
+    <div class="centerButtons">
+        <div><button type="button" class="select"><div>select</div></button></div>
+        <div><button type="button" class="start"><div>start</div></button></div>
+    </div>
+    <div class="actionButtons">
+        <button type="button" class="B"><div>B</div></button>
+        <button type="button" class="A"><div>A</div></button>
+    </div>
+</div>
+
+<div class="help">
+	Keyboard Controls:
+	<ul>
+		<li>W/A/S/D = Movement</li>
+		<li>E = A Button (Action)</li>
+		<li>Q = B Button (Stats/Help)</li>
+		<li>Z = Select (Credits)</li>
+		<li>X = Start</li>
+	</ul>
+</div>
+
+<footer>
+	<p>
+		Major Hammer, episode 1, v1.02
+		<br />
+		Copyright &copy; 2014
+	</p>
+	<p>
+		<a href="http://gamejolt.com/games/rpg/major-hammer/31839/">Play &amp; rate on Game Jolt</a>
+		<br />
+		<a href="https://twitter.com/deathraygames">@deathraygames on twitter</a>
+	</p>
+</footer>
+
+<!--- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script> --->
+<script src="js/libs/jquery-1.11.1.min.js"></script>
+<script src="js/sound_cannon.js"></script>
+<script src="js/gb.js"></script>
+<script src="js/hammer_trek_classes.js"></script>
+<script src="js/hammer_trek.js"></script>
+
+
+<style>
+	body { background-color: #343; }
+</style>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-7118348-1', 'deathraygames.com');
+  ga('send', 'pageview');
+</script>
+
+
+
+</body>
+</html>

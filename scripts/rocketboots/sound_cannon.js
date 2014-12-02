@@ -1,21 +1,29 @@
+/*
+	Sound Cannon
+	SoundCannon Class
+	By Luke Nickerson, 2014
+*/
 
+(function(){
+	var myFileName = "sound_cannon";
+	var myClassName = "SoundCannon";
 	
-function SoundCannonClass () {
-	this.sounds = {};
-	this.isSoundOn = true;
-	this.on = function() {
+	var sc = function() {
+		this.sounds = {};
+		this.isSoundOn = true;
+	};
+	sc.prototype.on = function() {
 		this.isSoundOn = true;
 	}
-	this.off = function() {
+	sc.prototype.off = function() {
 		this.isSoundOn = false;
 	}
-	this.toggle = function (forceSound) {
+	sc.prototype.toggle = function (forceSound) {
 		if (typeof forceSound === 'boolean') 	this.isSoundOn = forceSound;
 		else									this.isSoundOn = (this.isSoundOn) ? false : true;
 		return this.isSoundOn;	
 	}
-
-	this.loadSounds = function(soundNameArray, directory, extension) {
+	sc.prototype.loadSounds = function(soundNameArray, directory, extension) {
 		directory = "sounds/";
 		extension = ".mp3";
 		var sn, snL = soundNameArray.length;
@@ -27,8 +35,7 @@ function SoundCannonClass () {
 		}
 		console.log("Loaded", snL, "sounds.");
 	}
-	
-	this.play = function (soundName, isLooped)
+	sc.prototype.play = function (soundName, isLooped)
 	{
 		if (this.isSoundOn) {	
 			if (typeof this.sounds[soundName] === 'undefined') {
@@ -45,7 +52,10 @@ function SoundCannonClass () {
 			return false;
 		}
 	}
-}
 
-window.soundCannon = new SoundCannonClass();
+	// Install into RocketBoots if it exists, otherwise make global
+	if (typeof RocketBoots == "object") {
+		RocketBoots.installComponent(myFileName, myClassName, sc);
+	} else window[myClassName] = sc;
+})();
 	

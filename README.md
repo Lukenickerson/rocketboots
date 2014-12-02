@@ -3,27 +3,43 @@
 
 RocketBoots is kit to help create web games in JavaScript and HTML5.
 
-## The kit contains a number of components
+## Kit Contents
 
-* Data Delivery - loads JSON data
-* GB - gameboy styling and framework
+The kit contains a number of components / libraries.
+
+### Working Components
+
+* Core - to handle dependencies and script loading
 * Sound Cannon
 * Coordinates
-* Viewport
-
-## Future components
-
+* Image Overseer
 * Dice - randomness
-* Core - to handle dependencies and script loading
 * State Machine
-* Physics
-* Image Delivery - loads images
+
+### Next Components
+
+* Preloader check
 * Looper
 * Canvas basics
-* Canvas Effects
+* Disk - save/load game data
 
-## Contains Libraries
+### Future Components
+
+* State Machine: history/back-button controls
+* Viewport
+* Physics
+* Canvas Effects
+* GB - gameboy styling and framework
+
+### Other Libraries
 
 * jQuery (MIT License)
 * Mustahce.js (MIT license)
 * Raphael (MIT license)
+
+## How to Use
+
+1. Download a copy of the starter kit
+1. ???
+
+This kit is [licensed under the MIT License](license.txt).

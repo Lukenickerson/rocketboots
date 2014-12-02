@@ -2,18 +2,122 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>[ROCKETBOOTS WEB GAME KIT]</title>
+	<title>[ROCKETBOOTS WEB GAME]</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="css/yourstyle.css" />
+	<link rel="stylesheet" href="styles/rocketboots.css" />
+	<link rel="stylesheet" href="styles/game.css" />
+	<link href='http://fonts.googleapis.com/css?family=Contrail+One|Press+Start+2P' rel='stylesheet' type='text/css'>
 	<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 </head>
 <body>
 
+	<header class="stateHeader goto" data-state="mainmenu">
+		<h1>RocketBoots</h1>
+	</header>
+	<div class="state boot">
+		Booting Up
+	</div>	
+	<div class="state preload">
+		<h2>Loading</h2>
+	</div>
+	<section class="state mainmenu">
+		<h2>Main Menu</h2>
+		<nav>
+		<ul>
+			<li><button type="button" class="goto non-disk play" data-state="game">
+				Play</button></li>
+			<li><button type="button" class="goto disk has-game continue" data-state="game">
+				Continue</button></li>
+			<li><button type="button" class="goto disk has-game save" data-state="save">
+				Save</button></li>
+			<li><button type="button" class="goto disk new" data-state="new">
+				New</button></li>
+			<li><button type="button" class="goto disk load" data-state="load">
+				Load</button></li>
+			<li><button type="button" class="goto settings" data-state="settings">
+				Settings</button></li>
+			<li><button type="button" class="goto help" data-state="help">
+				Help</button></li>
+			<li><button type="button" class="goto credits" data-state="credits">
+				Credits</button></li>
+			<li><button type="button" class="goto share" data-state="share">
+				Share</button></li>
+		</ul>
+		</nav>
+		
+	</section>
+	<section class="state help">
+		<h2>Help</h2>
+		<nav>
+			<button type="button" class="goto" data-state="mainmenu">Back</button>
+		</nav>
+		<p>
+			[HELP TEXT GOES HERE]
+		</p>
+		<p>
+			For help, please see the 
+			<a href="">Ludum Dare entry page</a>
+			or 
+			<a href="">Tumblr #LDJAM</a>.
+		</p>
+	</section>
+	<section class="state settings">
+		<h2>Settings</h2>
+		<nav>
+			<button type="button" class="goto" data-state="mainmenu">Back</button>
+			<button type="button" class="toggleSound">Toggle Sound</button>
+		</nav>
+	</section>
+	<section class="state credits">
+		<h2>Credits</h2>
+		<nav>
+			<button type="button" class="goto" data-state="mainmenu">Back</button>
+		</nav>
+		<p>
+			[CREDITS]
+		</p>
+		<nav>
+			<button type="button" class="">Follow on Twitter</button>
+			<button type="button" class="">Follow on Tumblr</button>
+		</nav>
+
+	</section>
+	<section class="state share">
+		<h2>Share</h2>
+		<nav>
+			<button type="button" class="goto" data-state="mainmenu">Back</button>
+			<button type="button" class="">Tweet on Twitter</button>
+			<button type="button" class="">Email to a friend</button>
+		</nav>
+		<p>
+			Thank you for sharing this game!
+		</p>
+	</section>
+	
+	<div class="state game">
+		<h2>Game</h2>
+	</div>	
+	<footer class="stateFooter">
+		Developed in 48 hours for the
+		<a href="">Ludum Dare [XX] game jam (theme "[THEME]")</a>
+
+		<br>
+		by [DEVELOPERS] 
+		(<a href="">@twitterhandle</a>)
+		<br>
+		using
+		<a href="https://github.com/Lukenickerson/rocketboots" 
+				title="RocketBoots - Starter Kit for Web Games - visit the GitHub repo">
+			RocketBoots - starter kit for web games - v0.0
+		</a>
+		<br>
+		&copy; 2014
+	</footer>
 
 
-<!--
-<script src="js/somescript.js"></script>
--->
+<script src="scripts/rocketboots/core.js"></script>
+<script src="scripts/game.js"></script>
+
 
 </body>
 </html>

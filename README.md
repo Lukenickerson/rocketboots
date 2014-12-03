@@ -15,19 +15,28 @@ The kit contains a number of components / libraries.
 * Image Overseer
 * Dice - randomness
 * State Machine
+* Looper
+* Stage - layers/camera basics
+* World/Entity - basics
 
 ### Next Components
 
-* Preloader check
-* Looper
-* Canvas basics
-* Disk - save/load game data
+* Keyboard controls
+* Physics - Entity collision detection
+* Preloader - check
+* Stage - Tiles
+* World - get nearest entity (for clicks)
+* Physics - velocity
+* Physics - gravity
+* Stage - resize on window resize
 
 ### Future Components
 
+* Stage - Viewport (exact fit, show all, no scale)
+* Stage - zoom
 * State Machine: history/back-button controls
-* Viewport
-* Physics
+* Chromatic (colors)
+* Disk - save/load game data
 * Canvas Effects
 * GB - gameboy styling and framework
 

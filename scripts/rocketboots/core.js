@@ -25,7 +25,16 @@ var RocketBoots = {
 		o.addComponentToGame(gameObj, "state", "StateMachine");	
 		o.addComponentToGame(gameObj, "looper", "Looper");
 		o.addComponentToGame(gameObj, "dice", "Dice");
-		
+		o.addComponentToGame(gameObj, "world", "World");
+		// If game-stage exists, then add it to the game, otherwise don't.
+		if ($('#game-stage').length > 0) {
+			//o.addComponentToGame(gameObj, "stage", "Stage", "game-stage");
+			if (typeof RocketBoots.Stage == "function") {
+				gameObj.stage = new RocketBoots.Stage("game-stage", {x: 400, y: 400});
+			}
+			
+		}
+		// Setup default states
 		gameObj.state.add("boot")
 			.add("preload")
 			.add("mainmenu")
@@ -43,16 +52,18 @@ var RocketBoots = {
 		});
 		gameObj.state.start("boot");
 		//gameObj.state.getState("game").$view.show();
+		
+		// Setup state transition clicks
 		$('.goto').click(function(){
 			var stateName = $(this).data("state");
 			gameObj.state.transition(stateName);
 		});
 		
 	},
-	addComponentToGame : function(gameObj, gameCompName, componentClass){
+	addComponentToGame : function(gameObj, gameCompName, componentClass, arg){
 		if (typeof RocketBoots[componentClass] == "function") {
 			//console.log("Adding " + gameCompName);
-			gameObj[gameCompName] = new RocketBoots[componentClass]();
+			gameObj[gameCompName] = new RocketBoots[componentClass](arg);
 		}
 	},
 	loadScript : function(url, callback){
@@ -137,7 +148,7 @@ var RocketBoots = {
 		var o = this;
 		if (typeof attempt == "undefined") attempt = 0;
 		attempt++;
-		console.log("RB Init", attempt);
+		//console.log("RB Init", attempt);
 		if (attempt > 20) {
 			console.error("Could not initialize RocketBoots");
 			return false;

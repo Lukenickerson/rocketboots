@@ -34,6 +34,14 @@ body > * {
 		height: 100%;
 		background: rgba(0,0,0,0.8);
 	}
+	.game h2 {
+		display: none;
+	}
+	.game nav button {
+		position: absolute; z-index: 100;
+		min-width: 6em;
+		width: 6em;
+	}
 
 header, footer {
 	/* background: #cfcccc; */
@@ -47,6 +55,10 @@ header, footer {
 	}
 	header {
 		border-radius: 1em 1em 0 0;
+		background-position: 90% center;
+		background-repeat: no-repeat;
+		background-image: url('../images/boots1_flat_300.png');
+		background-size: auto 100%;
 	}
 	footer {
 		padding: 2em 2em;
@@ -87,3 +99,19 @@ nav button.play {
 .goto {
 	cursor: pointer;
 }
+
+
+.stage {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border: dashed gray 1px;
+}
+.stage .layer {
+	position: absolute; top: 0; left: 0;
+	width: 100%;
+	height: 100%;
+	border: dashed red 1px;
+}
+
+

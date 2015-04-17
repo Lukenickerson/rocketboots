@@ -25,6 +25,8 @@ var RocketBoots = {
 		o.addComponentToGame(gameObj, "state", "StateMachine");	
 		o.addComponentToGame(gameObj, "looper", "Looper");
 		o.addComponentToGame(gameObj, "dice", "Dice");
+		o.addComponentToGame(gameObj, "physics", "Physics");
+		o.addComponentToGame(gameObj, "entity", "Entity");
 		o.addComponentToGame(gameObj, "world", "World");
 		// If game-stage exists, then add it to the game, otherwise don't.
 		if ($('#game-stage').length > 0) {
@@ -34,13 +36,29 @@ var RocketBoots = {
 			}
 			
 		}
-		// Setup default states
-		gameObj.state.add("boot")
-			.add("preload")
-			.add("mainmenu")
-			.add("new").add("save").add("load")
-			.add("help").add("settings").add("credits").add("share")
+		// Setup default states (mostly menu controls)
+		var startMenu = function(){ 
+			$('header, footer').show();
+			this.$view.show();
+		};
+		var endMenu = function(){
+			$('header, footer').hide();
+			this.$view.hide();
+		}
+		gameObj.state
+			.add("boot", 	{ start: startMenu, end: endMenu })
+			.add("preload", { start: startMenu, end: endMenu })
+			.add("mainmenu", { start: startMenu, end: endMenu })
+			.add("new", 	{ start: startMenu, end: endMenu })
+			.add("save", 	{ start: startMenu, end: endMenu })
+			.add("load", 	{ start: startMenu, end: endMenu })
+			.add("help", 	{ start: startMenu, end: endMenu })
+			.add("settings", { start: startMenu, end: endMenu })
+			.add("credits", { start: startMenu, end: endMenu })
+			.add("share", 	{ start: startMenu, end: endMenu })
+			.add("game")
 		;
+		/*
 		gameObj.state.add("game",{
 			start : function(){
 				$('header, footer').hide();
@@ -50,8 +68,9 @@ var RocketBoots = {
 				this.$view.hide();
 			}
 		});
+		*/
 		gameObj.state.start("boot");
-		//gameObj.state.getState("game").$view.show();
+		//gameObj.state.get("game").$view.show();
 		
 		// Setup state transition clicks
 		$('.goto').click(function(){

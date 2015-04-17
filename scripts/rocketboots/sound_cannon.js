@@ -24,8 +24,8 @@
 		return this.isSoundOn;	
 	}
 	sc.prototype.loadSounds = function(soundNameArray, directory, extension) {
-		directory = "sounds/";
-		extension = ".mp3";
+		if (typeof directory != "string") directory = "sounds/";
+		if (typeof extension != "string") extension = ".mp3";
 		var sn, snL = soundNameArray.length;
 		for (var i = 0; i < snL; i++) {
 			sn = soundNameArray[i];
@@ -51,6 +51,10 @@
 		} else {
 			return false;
 		}
+	}
+	
+	sc.prototype.stop = function(soundName){
+		this.sounds[soundName].pause();
 	}
 
 	// Install into RocketBoots if it exists, otherwise make global

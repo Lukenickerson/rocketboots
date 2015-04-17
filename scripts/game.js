@@ -5,6 +5,7 @@ RocketBoots.loadComponents([
 	"state_machine",
 	"dice",
 	"looper",
+	"entity",
 	"world",
 	"stage"
 ]);

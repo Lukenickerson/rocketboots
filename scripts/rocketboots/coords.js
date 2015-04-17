@@ -14,22 +14,26 @@
 		this.y = (typeof y == 'number') ? y : 0;
 	}
 	Coords.prototype.check = function(){
-		if (typeof this.x != "number") {
-			console.error("Bad coord.x", this.x);
-			this.x = 0;
+		return this.checkCoords(this);
+	}
+	Coords.prototype.checkCoords = function(coord){
+		if (typeof coord.x != "number") {
+			console.error("Bad coord.x", coord.x);
+			coord.x = 0;
 		}
-		if (typeof this.y != "number") {
-			console.error("Bad coord.y", this.y);
-			this.y = 0;
+		if (typeof coord.y != "number") {
+			console.error("Bad coord.y", coord.y);
+			coord.y = 0;
 		}
+		return coord;
 	}
 	Coords.prototype.set = function(coord){
-		coord.check();
+		this.checkCoords(coord);
 		this.x = coord.x;
 		this.y = coord.y;
 	}
 	Coords.prototype.add = function(coord){
-		coord.check();
+		this.checkCoords(coord);
 		this.x += coord.x;
 		this.y += coord.y;
 		return this;
@@ -45,7 +49,7 @@
 		return new Coords(x, y);
 	}
 	Coords.prototype.getDot = function(coord){
-		coord.check();
+		this.checkCoords(coord);
 		// A dot B = ||A|| ||B|| cos theta ?
 		// this.getMagnitude() * coord.getMagnitude()    ???
 		return ((this.x * coord.x) + (this.y * coord.y));
@@ -62,14 +66,14 @@
 		return this;
 	}
 	Coords.prototype.getDistance = function(coord){
-		coord.check();
+		this.checkCoords(coord);
 		return Math.sqrt(
 			Math.pow( (this.x - coord.x), 2)
 			+ Math.pow( (this.y - coord.y), 2)
 		);
 	}
 	Coords.prototype.getUnitVector = function(coord){
-		coord.check();
+		this.checkCoords(coord);
 		var x = 0, y = 0;
 		var d = Math.abs(this.getDistance(coord));
 		if (this.x != coord.x) {

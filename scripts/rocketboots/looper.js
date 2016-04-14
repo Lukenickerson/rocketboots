@@ -1,31 +1,19 @@
 /*
 	Looper 
-	By Luke Nickerson, 2014
+	By Luke Nickerson, 2014-2015
 */
 
 (function(){
 	var myFileName = "looper";
 	var myClassName = "Looper";
 
-	var Loop = function(fn){
+	var Loop = function(fn, delay){
 		this.fn			= fn;
 		this.isLooping 	= false;
 		this.timer 		= 0;
 		this.iteration 	= 0;
 		//this.lastTime 	= 0;
-		
-		//==== Loop timing Constants
-		this.delay		= 14;
-		// ^ Decrease delay for more fps, increase for less fps
-		// 1000 = 1 second
-		// 100 = 1/10th of a second
-		// 16 = 1/?th of a second = 62.5 fps (closest to 60 fps)
-		// 15 = 66.667 fps
-		// 14 = 71.429 fps
-		// 10 = 1/100th of a second = 100 fps
-		// Needs to be less than 16 to accomodate for the time it takes to run the loop 'stuff'
-		this.framesPerSecond = (1000 / this.delay);
-		this.secondsPerLoop	= (this.delay / 1000);
+		this.setDelay(delay)
 		// Update certain things once every X iterations
 		this.modulusActions 	= [];
 		this.numOfModulusActions = 0;
@@ -94,9 +82,18 @@
 	*/
 	
 	Loop.prototype.setDelay = function(d){
-		this.delay = d;
+		this.delay = d || 14;
+		// ^ Decrease delay for more fps, increase for less fps
+		// 1000 = 1 second
+		// 100 = 1/10th of a second
+		// 16 = 1/?th of a second = 62.5 fps (closest to 60 fps)
+		// 15 = 66.667 fps
+		// 14 = 71.429 fps
+		// 10 = 1/100th of a second = 100 fps
+		// Needs to be less than 16 to accomodate for the time it takes to run the loop 'stuff'		
 		this.framesPerSecond = (1000 / this.delay);
 		this.secondsPerLoop	= (this.delay / 1000);
+		return this;
 	}
 	
 	Loop.prototype.addModulusAction = function(tps, fn)

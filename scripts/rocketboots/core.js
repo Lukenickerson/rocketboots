@@ -24,6 +24,8 @@ var RocketBoots = {
 		o.addComponentToGame(gameObj, "images", "ImageOverseer");
 		o.addComponentToGame(gameObj, "state", "StateMachine");	
 		o.addComponentToGame(gameObj, "looper", "Looper");
+		o.addComponentToGame(gameObj, "timeCount", "TimeCount");
+		o.addComponentToGame(gameObj, "incrementer", "Incrementer");
 		o.addComponentToGame(gameObj, "dice", "Dice");
 		o.addComponentToGame(gameObj, "physics", "Physics");
 		o.addComponentToGame(gameObj, "entity", "Entity");

@@ -5,24 +5,24 @@
 */
 
 (function(){
-	var myFileName = "image_overseer";
-	var myClassName = "ImageOverseer";
+	var FILE_NAME = "image_overseer";
+	var CLASS_NAME = "ImageBank";
 	
-	var io = function(){
+	function ComponentClass() {
 		this.images = {};
 		this.path = "images/";
 	}
-	io.prototype.get = function(imageName){
+	ComponentClass.prototype.get = function(imageName){
 		return this.images[imageName];
 	}
-	io.prototype.getAll = function(){
+	ComponentClass.prototype.getAll = function(){
 		return this.images;
 	}
-	io.prototype.load = function(imageFileMap, callback) 
+	ComponentClass.prototype.load = function(imageFileMap, callback) 
 	{
 		this.images = this.loadImages(imageFileMap, callback);
 	}
-	io.prototype.loadImages = function(imageFileMap, callback) 
+	ComponentClass.prototype.loadImages = function(imageFileMap, callback) 
 	{
 		var o = this;
 		var imagesCount = 0;
@@ -55,6 +55,8 @@
 	
 	// Install into RocketBoots if it exists, otherwise make global
 	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myFileName, myClassName, io);
-	} else window[myClassName] = io;
+		RocketBoots.installComponent(FILE_NAME, CLASS_NAME, ComponentClass);
+	} else {
+		window[CLASS_NAME] = ComponentClass;
+	}
 })();

@@ -55,17 +55,24 @@
 	};
 
 	Loop.prototype.start = function(){
+		if (this.isLooping) {
+			// Already looping (presumably)
+			return this;
+		}
 		this.isLooping = true;
 		this.numOfModulusActions = this.modulusActions.length;
 		this.loop();
+		return this;
 	}
 	Loop.prototype.pause = function(){
 		this.isLooping = false;
 		window.clearTimeout(this.timer);
+		return this;
 	}	
-	Loop.prototype.stop = function(){
+	Loop.prototype.stop = function(){ // same as pause except it resets the iteration count
 		this.pause();
-		this.iteration 	= 0;
+		this.iteration = 0;
+		return this;
 	}
 
 	/*

@@ -66,6 +66,17 @@
 		} else {
 			console.error("Roll needs 1, 2, or 3 arguments");
 		}
+	};
+	Dice.prototype.flip = function(heads, tails){
+		if (typeof heads === 'undefined' && typeof tails === 'undefined') {
+			heads = true;
+			tails = false;
+		}
+		return (this.roll1d(2) == 1) ? heads : tails;
+	};
+	Dice.prototype.selectRandom = function(arr){
+		var r = Math.floor(this.random() * arr.length);
+		return arr[r];
 	}
 	
 	//==== "Get" functions -- Based on random-type

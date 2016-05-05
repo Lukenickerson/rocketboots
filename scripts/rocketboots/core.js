@@ -1,95 +1,30 @@
 var RocketBoots = {
+
 	isInitialized : false,
 	readyFunctions : [],
 	components : {},
+	loadedScripts: [],
+	_initTimer : null,
+	_MAX_ATTEMPTS : 300,
+	_BOOTING_ELEMENT_ID : "booting-up-rocket-boots",
+	_: null, // Lodash
+	$: null, // jQuery
 	
-	//==== Classes
+//==== Classes
+
 	Component : function(c){
 		this.fileName = c;
 		this.name = null;
 		this.isLoaded = false;
 		this.isInstalled = false;	
 	},
-	Game : function(gn){
-		this.name = gn || "Game made with RocketBoots";
-		
-		
-		this.init();
-	},
 	
-	//==== Functions
-	addComponentsToGame : function(gameObj){
-		var o = this;
-		o.addComponentToGame(gameObj, "sounds", "SoundCannon");
-		o.addComponentToGame(gameObj, "images", "ImageOverseer");
-		o.addComponentToGame(gameObj, "state", "StateMachine");	
-		o.addComponentToGame(gameObj, "looper", "Looper");
-		o.addComponentToGame(gameObj, "timeCount", "TimeCount");
-		o.addComponentToGame(gameObj, "incrementer", "Incrementer");
-		o.addComponentToGame(gameObj, "dice", "Dice");
-		o.addComponentToGame(gameObj, "physics", "Physics");
-		o.addComponentToGame(gameObj, "entity", "Entity");
-		o.addComponentToGame(gameObj, "world", "World");
-		// If game-stage exists, then add it to the game, otherwise don't.
-		if ($('#game-stage').length > 0) {
-			//o.addComponentToGame(gameObj, "stage", "Stage", "game-stage");
-			if (typeof RocketBoots.Stage == "function") {
-				gameObj.stage = new RocketBoots.Stage("game-stage", {x: 400, y: 400});
-			}
-			
-		}
-		// Setup default states (mostly menu controls)
-		var startMenu = function(){ 
-			$('header, footer').show();
-			this.$view.show();
-		};
-		var endMenu = function(){
-			$('header, footer').hide();
-			this.$view.hide();
-		}
-		gameObj.state
-			.add("boot", 	{ start: startMenu, end: endMenu })
-			.add("preload", { start: startMenu, end: endMenu })
-			.add("mainmenu", { start: startMenu, end: endMenu })
-			.add("new", 	{ start: startMenu, end: endMenu })
-			.add("save", 	{ start: startMenu, end: endMenu })
-			.add("load", 	{ start: startMenu, end: endMenu })
-			.add("help", 	{ start: startMenu, end: endMenu })
-			.add("settings", { start: startMenu, end: endMenu })
-			.add("credits", { start: startMenu, end: endMenu })
-			.add("share", 	{ start: startMenu, end: endMenu })
-			.add("game")
-		;
-		/*
-		gameObj.state.add("game",{
-			start : function(){
-				$('header, footer').hide();
-				this.$view.show();
-			}, end : function(){
-				$('header, footer').show();
-				this.$view.hide();
-			}
-		});
-		*/
-		gameObj.state.start("boot");
-		//gameObj.state.get("game").$view.show();
-		
-		// Setup state transition clicks
-		$('.goto').click(function(){
-			var stateName = $(this).data("state");
-			gameObj.state.transition(stateName);
-		});
-		
-	},
-	addComponentToGame : function(gameObj, gameCompName, componentClass, arg){
-		if (typeof RocketBoots[componentClass] == "function") {
-			//console.log("Adding " + gameCompName);
-			gameObj[gameCompName] = new RocketBoots[componentClass](arg);
-		}
-	},
+//==== General Functions
+	log : console.log,
 	loadScript : function(url, callback){
 		//console.log("Loading script", url);
 		// http://stackoverflow.com/a/7719185/1766230
+		var o = this;
 		var s = document.createElement('script');
 		var r = false;
 		var t;
@@ -101,20 +36,66 @@ var RocketBoots = {
 			if ( !r && (!this.readyState || this.readyState == 'complete') )
 			{
 				r = true;
+				o.loadedScripts.push(url);
 				if (typeof callback == "function") callback();
 			}
 		};
 		t = document.getElementsByTagName('script')[0];
-		t.parentNode.insertBefore(s, t);	
+		t.parentNode.insertBefore(s, t);
+		return this;
 	},
-	installComponent : function(fileName, componentClassName, componentClass){
-		var o = this;
-		if (typeof o.components[fileName] == "undefined") {
-			o.components[fileName] = new o.Component(fileName);
+
+//==== Component Functions
+
+	hasComponent: function (componentClass) {
+		if (typeof RocketBoots[componentClass] == "function") {
+			return true;
+		} else {
+			return false;
 		}
-		o.components[fileName].name = componentClassName;
-		o.components[fileName].isInstalled = true;
-		o[componentClassName] = componentClass;
+	},	
+	installComponent : function(fileName, componentClassName, componentClass, requirements, callback){
+		var o = this;
+		if (!o.areComponentsLoaded(requirements)) {
+			console.warn("Component(s) missing", requirements);
+			var compTimer = window.setTimeout(function(){ 
+				o.installComponent(fileName, componentClassName, componentClass, requirements, callback);
+			}, 10000);
+		} else {
+			if (typeof o.components[fileName] == "undefined") {
+				o.components[fileName] = new o.Component(fileName);
+			}
+			if (typeof callback === "function") {
+				callback();
+			}
+			o.components[fileName].name = componentClassName;
+			o.components[fileName].isInstalled = true;
+			o[componentClassName] = componentClass;
+		}
+		return this;
+	},
+	getComponentByName: function (componentName) {
+		var o = this;
+		for (var cKey in o.components) {
+			if (o.components[cKey].name == componentName) {
+				return o.components[cKey];
+			}
+		};
+		return;
+	},
+	areComponentsLoaded: function (componentNameArr) {
+		var o = this, areLoaded = true;
+		if (typeof componentNameArr !== 'object') {
+			return areLoaded;
+		}
+		for (var i = 0; i < componentNameArr.length; i++) {
+			if (!o.isComponentInstalled(componentNameArr[i])) { areLoaded = false; }
+		};
+		return areLoaded;
+	},
+	isComponentInstalled: function (componentName) {
+		var comp = this.getComponentByName(componentName);
+		return (comp && comp.isInstalled);
 	},
 	loadComponents : function(arr){
 		var o = this;
@@ -128,9 +109,10 @@ var RocketBoots = {
 					o.components[componentName].isLoaded = true;
 				});
 			} else {
-				console.error("Component already exists", componentName);
+				//console.error("Component already exists", componentName);
 			}
 		}
+		return this;
 	},
 	areAllComponentsLoaded : function(){
 		var o = this;
@@ -141,9 +123,12 @@ var RocketBoots = {
 			componentCount++;
 			if (o.components[c].isInstalled) componentsInstalledCount++;
 		}
-		console.log("RB Installed: " + componentsInstalledCount + "/" + componentCount);
+		console.log("RB Components Installed: " + componentsInstalledCount + "/" + componentCount);
 		return (componentsInstalledCount >= componentCount);
 	},
+
+//==== Ready and Init Functions
+
 	ready : function(callback){
 		if (typeof callback == "function") {
 			if (this.isInitialized) {
@@ -154,6 +139,7 @@ var RocketBoots = {
 		} else {
 			console.error("Ready argument (callback) not a function");
 		}
+		return this;
 	},
 	runReadyFunctions : function(){
 		var o = this;
@@ -162,65 +148,76 @@ var RocketBoots = {
 		for (var i = 0; o.readyFunctions.length > 0; i++){
 			f = o.readyFunctions.splice(i,1);
 			fn = f[0];
-			fn();
-		}		
+			fn(o);
+		}
+		return this;	
 	},
 	init : function(attempt){
 		var o = this;
-		if (typeof attempt == "undefined") attempt = 0;
-		attempt++;
-		//console.log("RB Init", attempt);
-		if (attempt > 20) {
+		// TODO: allow dependecies to be injected rather than forcing them to be on the window scope
+		var isJQueryUndefined = (typeof $ === "undefined");
+		var isLodashUndefined = (typeof _ === "undefined");
+		var areRequiredScriptsMissing = isJQueryUndefined || isLodashUndefined;
+
+		if (typeof attempt === "undefined") { 
+			attempt = 1; 
+		} else if (attempt > o._MAX_ATTEMPTS) {
 			console.error("Could not initialize RocketBoots");
 			return false;
+		} else {
+			attempt++;
+		}
+		//console.log("RB Init", attempt, (areRequiredScriptsMissing ? "Waiting on required objects from external scripts" : ""));
+
+		if (!isJQueryUndefined) {
+			o.$ = $;
+		}
+		if (!isLodashUndefined) {
+			o._ = _;
 		}
 
-		if (typeof $ == "undefined") {
-			if (attempt == 1) {
-				// Create "rb" alias
-				if (typeof window.rb != "undefined") {
-					o._rb = window.rb;
-				}
-				window.rb = o;			
-				// Load jQuery
-				o.loadScript("libs/jquery-2.1.1.min", function(){
-					o.init(attempt);
-				});
-			} else {
+		function tryAgain () {
+			// Clear previous to stop multiple inits from happening
+			window.clearTimeout(o._initTimer);
+			o._initTimer = window.setTimeout(function(){
 				o.init(attempt);
+			}, (attempt * 10));
+		}
+
+		// On first time through, do some things
+		if (attempt === 1) {
+			// Create "rb" alias
+			if (typeof window.rb !== "undefined") {
+				o._rb = window.rb;
 			}
-		} else {	// jQuery is loaded, so continue with initialization
-		
-			if (o.areAllComponentsLoaded()) {
-				console.log("RB Init - All components are loaded. Running Ready functions");
-				o.runReadyFunctions();
-				o.isInitialized = true;
-				return true;
-			} else {
-				// Try again
-				var initTimer = window.setTimeout(function(){ 
-					o.init(attempt);
-				}, 10);
-				return false;
+			window.rb = o;	
+			// Load default components
+			// TODO: make this configurable
+			this.loadComponents(["Game"]);
+
+			// Load required scripts
+			if (isJQueryUndefined) {
+				o.loadScript("libs/jquery-2.1.1.min", function(){
+					//o.init(1);
+				});
+			} 
+			if (isLodashUndefined) {
+				o.loadScript("libs/lodash.min", function(){ });
 			}
 		}
+
+		if (o.areAllComponentsLoaded() && !areRequiredScriptsMissing) {
+			console.log("RB Init - All scripts and components are loaded.", o.loadedScripts, " \nRunning Ready functions.\n");
+			o.$('#' + o._BOOTING_ELEMENT_ID).hide();
+			o.runReadyFunctions();
+			o.isInitialized = true;
+			return true;
+		}
+
+		tryAgain();
+		return false;
 	}
 
 };
-
-//======================================================= Game Functions ======
-
-RocketBoots.Game.prototype.init = function(){
-	//console.log("Initializing Game");
-	var g = this;
-	
-	if (typeof RocketBoots == "object"){
-		RocketBoots.addComponentsToGame(g);
-	}
-}
-
-RocketBoots.Game.prototype.cloneDataObject = function (o) {
-	return JSON.parse(JSON.stringify(o));
-}
 
 RocketBoots.init();

@@ -1,12 +1,13 @@
-/*
-	Physics
-	Physics class
-	By Luke Nickerson, 2014
-	Some functions from stardust.js
-*/
 (function(){
+	var component = {
+		fileName: 		"Physics",
+		classNames:		["Physics"],
+		requirements:	[], // Entity?
+		description:	"Physics class",
+		credits:		"By Luke Nickerson, 2014, some funcitons from stardust.js"
+	};
 
-	var Physics = function(){
+	var Physics = component.Physics = function(){
 	
 	}
 	Physics.prototype.apply = function(world){
@@ -72,8 +73,14 @@
 		//console.log("momentum after", (o1.mass * o1.vel.getMagnitude()) + (o2.mass * o2.vel.getMagnitude()));
 		return true;
 	}
-	
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("physics", "Physics", Physics);
-	} else window.Physics = Physics;
+
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

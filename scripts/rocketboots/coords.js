@@ -1,15 +1,13 @@
-/*
-	2D Coordinates 
-	Coords Class
-	By Luke Nickerson, 2014
-	Originally created for stardust.js
-	Example of usage: myPosition = new Coords(4,5);
-*/
 (function(){
-	var myFileName = "coords";
-	var myClassName = "Coords";
+	var component = {
+		fileName: 		"Coords",
+		classNames:		["Coords"],
+		requirements:	[],
+		description:	"2D Coordinates", // Originally created for stardust.js
+		credits:		"By Luke Nickerson, 2014"
+	};
 	
-	var Coords = function(x,y){
+	var Coords = component.Coords = function CoordsClass (x,y){
 		this.x = (typeof x == 'number') ? x : 0;
 		this.y = (typeof y == 'number') ? y : 0;
 	}
@@ -115,8 +113,12 @@
 		return (Math.round(this.x) == Math.round(coord.x) && Math.round(this.y) == Math.round(coord.y));
 	}
 	
-	// Install into RocketBoots if it exists, otherwise make global
+	// Install into RocketBoots if it exists
 	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myFileName, myClassName, Coords);
-	} else window[myClassName] = Coords;
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

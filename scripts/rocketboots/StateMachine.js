@@ -1,15 +1,13 @@
-/*
-	State Machine 
-	By Luke Nickerson, 2014
-	REQUIRES: jQuery ($)
-*/
-
 (function(){
-	var myFileName = "state_machine";
-	var myClassName = "StateMachine";
+	var component = {
+		fileName: 		"StateMachine",
+		classNames:		["StateMachine"],
+		requirements:	[],
+		description:	"State machine; requires jQuery ($)",
+		credits:		"By Luke Nickerson, 2014"
+	};
 
-
-	var StateMachine = function(){
+	var StateMachine = component.StateMachine = function(){
 		this.states = {};
 		this.currentState = null;
 		this.history = [];
@@ -125,14 +123,13 @@
 	
 	
 	
-	
-	// Install into RocketBoots if it exists, otherwise make global		
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(
-			myFileName, 	// file name
-			myClassName, 	// class name
-			StateMachine		// class
-		);
-	} else window[myClassName] = StateMachine;
-	//window[myClassName] = StateMachine;
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

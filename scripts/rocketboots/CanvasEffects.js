@@ -1,14 +1,14 @@
 (function(){
 	var component = {
-		fileName: 		"Chromatic",
-		classNames:		["Chromatic"],
+		fileName: 		"CanvasEffects",
+		classNames:		["CanvasEffects"],
 		requirements:	[],
 		description:	"",
 		credits:		""
 	};
 
 
-	component.Chromatic = function ChromaticClass () {
+	component.CanvasEffects = function CanvasEffectsClass () {
 
 	}
 
@@ -17,7 +17,7 @@
 
 
 	// Install into RocketBoots if it exists
-	if (typeof RocketBoots === "object") {
+	if (typeof RocketBoots == "object") {
 		RocketBoots.installComponent(component);
 	} else { // Otherwise put the classes on the global window object
 		for (var i = 0; i < component.classNames.length; i++) {

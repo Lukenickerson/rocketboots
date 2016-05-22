@@ -1,6 +1,13 @@
-
+(function(){
+	var component = {
+		fileName: 		"Viewport",
+		classNames:		["Viewport"],
+		requirements:	[],
+		description:	"",
+		credits:		""
+	};
 /* ------- Viewport resizer --- by Luke Nickerson --- 1/2013 ---------- */
-
+/*
 function Viewport () 
 {
 	this.winWidth 	= 100;
@@ -110,3 +117,16 @@ $(document).ready(function(){
 		window.viewport.resizeToWindow();
 	});
 });
+*/
+
+
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
+})();

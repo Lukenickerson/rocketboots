@@ -1,12 +1,13 @@
-/*
-	Currency (previously part of "incrementer")
-	Currency class, useful for incremental games
-	By Luke Nickerson, 2015-2016
-*/
 (function(){
+	var component = {
+		fileName: 		"Currency", 
+		classNames:		["Currency"],
+		requirements:	[],
+		description:	"Currency class, useful for incremental games",
+		credits:		"previously part of incrementer; by Luke Nickerson 2015-2016"
+	};
 
-
-	var Currency = function(options){
+	var Currency = component.Currency = function CurrencyClass (options){
 		options 		= options || {};
 		this.name 		= (options.name || options.elementId || "Currency_" + Math.round(Math.random() * 9999999));
 		this.displayName = (options.displayName || this.name);
@@ -165,12 +166,12 @@
 	Currency.prototype.incrementByElapsedTime = Currency.prototype._incrementByElapsedTime;
 
 
-	// Install into RocketBoots if it exists, otherwise make global
+	// Install into RocketBoots if it exists
 	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(
-			"Currency", 	// file name
-			"Currency", 	// class name
-			Currency		// class
-		);
-	} else window["Currency"] = Currency;
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

@@ -4,6 +4,7 @@ var RocketBoots = {
 	readyFunctions : [],
 	components : {},
 	loadedScripts: [],
+	version: {full: "0.2.0", major: 0, minor: 2, patch: 0, codeName: "micro-city"},
 	_autoLoadRequirements: true,
 	_initTimer : null,
 	_MAX_ATTEMPTS : 300,
@@ -55,28 +56,32 @@ var RocketBoots = {
 			return false;
 		}
 	},
-	// TODO: Make this the default and deprecate the way its done in installComponent
-	installComponentByObject : function (options, callback) {
-		var mainClass = (options.classes.length > 0) ? options.classes[0] : (options.classes || options.className);
-		this.installComponent(options.fileName, mainClass, options[mainClass], options.requirements, callback);
-		// TODO: bring in descriptions and credits somehow
-
-	},
-	installComponent : function(fileName, componentClassName, componentClass, requirements, callback){
+	installComponent : function (options, callback) {
+		// options = { fileName, classNames, requirements, description, credits }
 		var o = this;
+		var mainClassName = (typeof options.classNames === 'object' && options.classNames.length > 0) ? options.classNames[0] : (options.classNames || options.className);
+		var componentClass = options[mainClassName];
+		var requirements = options.requirements;
+		var fileName = options.fileName;
+		// TODO: bring in descriptions and credits somehow
+		if (typeof mainClassName !== 'string' || typeof componentClass !== 'function') {
+			console.error("Error installing component ", options);
+			return;
+		}
+		
 		//console.log("Installing", fileName, " ...Are required components", requirements, " loaded?", o.areComponentsLoaded(requirements));
 		if (!o.areComponentsLoaded(requirements)) {
 			var tryAgainDelay, compTimer;
 			if (o._autoLoadRequirements) {
-				console.log(fileName, "is missing required component(s)", requirements, ". Autoloading...");
+				console.log(fileName, "requires component(s)", requirements, " which aren't loaded. Autoloading...");
 				o.loadComponents(requirements);
 				tryAgainDelay = 100;
 			} else {
-				console.warn(fileName, "is missing required component(s)", requirements);
+				console.warn(fileName, "requires component(s)", requirements, " which aren't loaded.");
 				tryAgainDelay = 5000;
 			}
 			compTimer = window.setTimeout(function(){ 
-				o.installComponent(fileName, componentClassName, componentClass, requirements, callback);
+				o.installComponent(options, callback);
 			}, tryAgainDelay);
 
 		} else {
@@ -86,12 +91,12 @@ var RocketBoots = {
 			if (typeof callback === "function") {
 				callback();
 			}
-			o.components[fileName].name = componentClassName;
+			o.components[fileName].name = mainClassName;
 			o.components[fileName].isInstalled = true;
 			// TODO: Add description and credits
 			//o.components[fileName].description = "";
 			//o.components[fileName].credits = "";
-			o[componentClassName] = componentClass;
+			o[mainClassName] = componentClass;
 		}
 		return this;
 	},
@@ -196,6 +201,7 @@ var RocketBoots = {
 		}
 		if (!isLodashUndefined) {
 			o._ = _;
+			o.each = o.forEach = _.each;
 		}
 
 		function tryAgain () {

@@ -1,10 +1,11 @@
-/*
-	Game 
-	Game Class for RocketBoots
-	By Luke Nickerson, 2016
-*/
-
 (function(){
+	var component = {
+		fileName: 		"Game",
+		classNames:		["Game"],
+		requirements:	[],
+		description:	"Game Class for RocketBoots",
+		credits:		"By Luke Nickerson, 2016"
+	};
 
 	function Game (options) {
 		if (typeof options === 'string') {
@@ -16,6 +17,7 @@
 		
 		this.init(options);
 	}
+	component.Game = Game;
 
 	//======================================================= Game Functions ======
 
@@ -143,8 +145,12 @@
 	};
 
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("Game", "Game", Game);
-	} else window[myClassName] = Dice;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

@@ -1,14 +1,13 @@
-/*
-	Sound Cannon
-	SoundCannon Class
-	By Luke Nickerson, 2014-2015
-*/
-
 (function(){
-	var myFileName = "sound_cannon";
-	var myClassName = "SoundCannon";
+	var component = {
+		fileName: 		"SoundBank",
+		classNames:		["SoundBank"],
+		requirements:	[],
+		description:	"Sound loader/player; formerly SoundCannon",
+		credits:		"By Luke Nickerson, 2014-2015"
+	};
 	
-	var sc = function() {
+	var sc = component.SoundBank = function() {
 		this.sounds = {};
 		this.isSoundOn = true;
 		this.isMusicOn = true;
@@ -98,9 +97,13 @@
 		}
 	}
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myFileName, myClassName, sc);
-	} else window[myClassName] = sc;
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();
-	

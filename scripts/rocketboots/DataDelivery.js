@@ -1,18 +1,19 @@
-/*
-	Data Delivery
-	DataDelivery Class
-	By Luke Nickerson, 2014-2015
-	REQUIRES: jQuery ($)
-*/
-
 (function(){
+	var component = {
+		fileName: 		"DataDelivery",
+		classNames:		["DataDelivery"],
+		requirements:	[],
+		description:	"DataDelivery Class, requires jquery ($)",
+		credits:		"By Luke Nickerson, 2014-2015"
+	};
+
 	// Requirements
 	if (!window.jQuery) { 
 		console.error("DataDelivery requires jQuery. jQuery is not loaded!"); 
 	}
 	
 	// Create object
-	var dd = function (dataVarName) {
+	var dd = component.DataDelivery = function (dataVarName) {
 		this.dataVarName = dataVarName;
 	}
 
@@ -47,12 +48,12 @@
 		});
 	}
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(
-			"data_delivery", 	// file name
-			"DataDelivery", 	// class name
-			dd					// object
-		);
-	} else window["DataDelivery"] = dd;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

@@ -1,13 +1,14 @@
-/*
-	World
-	World class
-	By Luke Nickerson, 2014
-
-*/
 (function(){
+	var component = {
+		fileName: 		"World",
+		classNames:		["World"],
+		requirements:	["Entity"], // Extended from Entity Class
+		description:	"",
+		credits:		"By Luke Nickerson, 2014, 2016"
+	};
 
 	//==== WORLD
-	var World = function(options){
+	var World = component.World = function WorldClass (options){
 		options = options || {};
 		options.size = options.size || {};
 		options.size.x = options.size.x || 100;
@@ -283,9 +284,15 @@
 		//World.prototype.Coords = (typeof RocketBoots.Coords == "function") ? RocketBoots.Coords : Coords;
 		World.prototype.Entity = (typeof RocketBoots.Entity == "function") ? RocketBoots.Entity : Entity;
 	}
-		
-	// Install as RocketBoots component
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("world", "World", World, ["Entity"], initWorldPrototype);
-	} else window.World = World;
+
+
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

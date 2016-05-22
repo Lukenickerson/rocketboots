@@ -1,12 +1,14 @@
-/*
-	Stage
-	Stage class
-	By Luke Nickerson, 2014
-*/
 (function(){
-	var PI2 = Math.PI*2;
+	var component = {
+		fileName: 		"Stage",
+		classNames:		["Stage"],
+		requirements:	[],
+		description:	"",
+		credits:		"By Luke Nickerson, 2014"
+	};
+	//var PI2 = Math.PI*2;
 
-	var Stage = function(eltId, size){
+	var Stage = component.Stage = function(eltId, size){
 		console.log("Stage: Creating stage", eltId, size);
 		this.elementId = eltId;
 		this.size = { x: size.x, y: size.y };
@@ -381,9 +383,12 @@
 
 
 
-
-	
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("stage", "Stage", Stage);
-	} else window.Stage = Stage;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

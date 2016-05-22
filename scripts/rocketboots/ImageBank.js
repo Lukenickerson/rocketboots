@@ -1,12 +1,11 @@
-/*
-	Image Overseer
-	ImageOverseer Class
-	By Luke Nickerson, 2014
-*/
-
 (function(){
-	var FILE_NAME = "image_overseer";
-	var CLASS_NAME = "ImageBank";
+	var component = {
+		fileName: 		"ImageBank",
+		classNames:		["ImageBank"],
+		requirements:	[],
+		description:	"image loading; formerly known as Image Overseer",
+		credits:		"By Luke Nickerson, 2014"
+	};
 	
 	function ComponentClass() {
 		this.images = {};
@@ -53,10 +52,14 @@
 		return images;
 	}
 	
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(FILE_NAME, CLASS_NAME, ComponentClass);
-	} else {
-		window[CLASS_NAME] = ComponentClass;
+
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
 	}
 })();

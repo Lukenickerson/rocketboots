@@ -1,10 +1,11 @@
-/*
-	Entity
-	Entity class
-	By Luke Nickerson, 2014
-*/
 (function(){
-
+	var component = {
+		fileName: 		"Entity",
+		classNames:		["Entity"],
+		requirements:	["Coords"],
+		description:	"Entity class",
+		credits:		"By Luke Nickerson, 2014-2016"
+	};
 	//=========================================================================
 	//==== Entity
 	
@@ -176,8 +177,13 @@
 		Entity.prototype.Coords = (typeof RocketBoots.Coords == "function") ? RocketBoots.Coords : Coords;
 	}
 	
-	// Install as RocketBoots component
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("entity", "Entity", Entity, ["Coords"], initEntityPrototype);
-	} else window.Entity = Entity;
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

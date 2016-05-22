@@ -1,13 +1,13 @@
-/*
-	Dice 
-	Dice Class
-	By Luke Nickerson, 2014-2016
-*/
-
 (function(){
-	var myName = "Dice"; // file and class
+	var component = {
+		fileName: 		"Dice",
+		classNames:		["Dice"],
+		requirements:	[],
+		description:	"Dice class for random number generation",
+		credits:		"By Luke Nickerson, 2014-2016"
+	};
 
-	var Dice = function(){
+	var Dice = component.Dice = function(){
 		this.randSeed = 1;
 		this.type = "random";
 	}
@@ -93,8 +93,12 @@
 	}
 
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myName, myName, Dice);
-	} else window[myName] = Dice;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

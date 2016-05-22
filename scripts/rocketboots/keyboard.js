@@ -1,10 +1,12 @@
-/*
-	Keyboard
-	Keyboard class
-	By Luke Nickerson, 2016
-*/
 (function(){
-	var Keyboard = function(){
+	var component = {
+		fileName: 		"Keyboard",
+		classNames:		["Keyboard"],
+		requirements:	[],
+		description:	"",
+		credits:		"By Luke Nickerson, 2016"
+	};
+	var Keyboard = component.Keyboard = function KeyboardClass (){
 		this.keyDownActions = {};
 		this.keyPressActions = {};
 		this.keyUpActions = {};
@@ -182,7 +184,12 @@
 
 
 	
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent("keyboard", "Keyboard", Keyboard);
-	} else window.Keyboard = Keyboard;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

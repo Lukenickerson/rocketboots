@@ -1,12 +1,13 @@
-/*
-	Loop (originally "Looper")
-	By Luke Nickerson, 2014-2016
-*/
-
 (function(){
-	var myName = "Loop"; // both file and class
+	var component = {
+		fileName: 		"Loop",
+		classNames:		["Loop"],
+		requirements:	[],
+		description:	"Loop (originally 'Looper')",
+		credits:		"By Luke Nickerson, 2014-2016"
+	};
 
-	var Loop = function(fn, delay){
+	var Loop = component.Loop = function(fn, delay){
 		this.set(fn, delay);
 		this.isLooping 	= false;
 		this.timer 		= 0;
@@ -133,8 +134,12 @@
 	
 	
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myName, myName, Loop);
-	} else window[myClassName] = Loop;
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

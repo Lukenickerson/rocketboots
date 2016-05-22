@@ -1,11 +1,13 @@
-/*
-	Incrementer
-	Incrementer class, useful for incremental games
-	By Luke Nickerson, 2015-2016
-*/
 (function(){
+	var component = {
+		fileName: 		"Incrementer",
+		classNames:		["Incrementer"],
+		requirements:	["Currency"],
+		description:	"Incrementer class, useful for incremental games",
+		credits:		"By Luke Nickerson, 2015-2016"
+	};
 
-	var Incrementer = function(){
+	var Incrementer = component.Incrementer = function IncrementerClass (){
 		this.currencies = {};
 		this.currencyArray = [];
 		this.currencyNum = 0;
@@ -77,13 +79,13 @@
 	
 
 
-	// Install into RocketBoots if it exists, otherwise make global
-	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(
-			"Incrementer", 	// file name
-			"Incrementer", 	// class name
-			Incrementer,	// class
-			["Currency"]	// dependencies
-		);
-	} else window["Incrementer"] = Incrementer;
+
+	// Install into RocketBoots if it exists
+	if (typeof RocketBoots === "object") {
+		RocketBoots.installComponent(component);
+	} else { // Otherwise put the classes on the global window object
+		for (var i = 0; i < component.classNames.length; i++) {
+			window[component.classNames[i]] = component[component.classNames[i]];
+		}
+	}
 })();

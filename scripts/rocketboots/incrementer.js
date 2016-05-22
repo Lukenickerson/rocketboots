@@ -1,83 +1,89 @@
 /*
 	Incrementer
 	Incrementer class, useful for incremental games
-	By Luke Nickerson, 2015
+	By Luke Nickerson, 2015-2016
 */
 (function(){
 
 	var Incrementer = function(){
-		this.x = null;
 		this.currencies = {};
 		this.currencyArray = [];
 		this.currencyNum = 0;
 	}
-	Incrementer.prototype.addCurrency = function(name, displayName, val, perStep, min, max, callback){
+	Incrementer.prototype.addCurrencies = function(currencies){
+		for (var i = 0; i < currencies.length; i++) {
+			this.addCurrency(currencies[i]);
+		}
+		return this;
+	};
+	Incrementer.prototype.addCurrency = function(currencyOptions){
+		var curr;
 		if (typeof this.currencies[name] == "object") {
 			console.error("Currency", name, "already exists; cannot add again.");
 			return false;
 		} else {
-			this.currencies[name] = new this.Currency(name, displayName, val, perStep, min, max, callback);
-			this.currencyArray.push(name);
+			curr = new RocketBoots.Currency(currencyOptions);
+			this.currencies[curr.name] = curr;
+			this.currencyArray.push(curr.name);
 			this.currencyNum = this.currencyArray.length;
 			return this;
 		}
-	}
-	Incrementer.prototype.increment = function(steps){
-		var i, curr;
-		if (typeof steps != "number") steps = 1;
-		this.loopOverCurrencies(function(curr){
-			curr.increment(steps);
+	};
+
+	Incrementer.prototype.increment = function(steps, draw){
+		if (typeof steps != "number") { steps = 1; }
+		return this._increment(steps, draw, "increment");
+	};
+	Incrementer.prototype.incrementByElapsedTime = function (time, draw) {
+		return this._increment(time, draw, "incrementByElapsedTime");
+	};
+	Incrementer.prototype._increment = function (arg1, draw, incMethod) {
+		var fn;
+		if (draw) {
+			fn = function (curr) { 
+				curr[incMethod](arg1);
+				curr.draw();
+			};
+		} else {
+			fn = function (curr) { 
+				curr[incMethod](arg1); 
+			};
+		}
+		this.loopOverCurrencies(fn);		
+		return this;	
+	};
+
+	Incrementer.prototype.calculate = function(modifiers){
+		var currencies = this.currencies;
+		this.loopOverCurrencies(function(curr, currencyKey){
+			curr.calculate(currencies);
+			if (typeof modifiers[currencyKey] === 'object') {
+				for (var prop in modifiers[currencyKey]) {
+					curr[prop] += modifiers[currencyKey][prop];
+				}
+			}
 		});
+		return this;		
 	}
+
 	Incrementer.prototype.loopOverCurrencies = function(callback){
 		var i, curr;
 		for (i = 0; i < this.currencyNum; i++){
 			curr = this.currencies[ this.currencyArray[i] ];
-			callback(curr);
-		}	
-	}
-	
-	
-	
-	Incrementer.prototype.Currency = function(name, displayName, val, perStep, min, max, callback){
-		this.name = name;
-		this.displayName = displayName;
-		this.val = (val || 0);
-		this.perStep = (perStep || 0); 
-		this.min = (min || 0);
-		this.max = (max || 1000000000);
-		if (typeof callback == "function") {
-			this.increment = function (steps){
-				this._increment();
-				callback(steps);
-			}
-		} else {
-			this.increment = this._increment;
+			callback(curr, this.currencyArray[i]);
 		}
-	};
-	Incrementer.prototype.Currency.prototype.add = function(amount){
-		this.val += amount;
-		//console.log(this.val);
-		if (this.val > this.max) {
-			this.val = this.max;
-		} else if (this.val < this.min) {
-			this.val = this.min;
-		}
-		return this;
+		return this;	
 	}
-	Incrementer.prototype.Currency.prototype._increment = function(steps){
-		this.add(steps * this.perStep);
-		//console.log(this.name, this.val);
-		return this;
-	}
+	
 
 
 	// Install into RocketBoots if it exists, otherwise make global
 	if (typeof RocketBoots == "object") {
 		RocketBoots.installComponent(
-			"incrementer", 	// file name
+			"Incrementer", 	// file name
 			"Incrementer", 	// class name
-			Incrementer		// class
+			Incrementer,	// class
+			["Currency"]	// dependencies
 		);
 	} else window["Incrementer"] = Incrementer;
 })();

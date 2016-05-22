@@ -24,25 +24,42 @@
 		var g = this;
 
 		g._addDefaultComponents(options);
-		g._addStages(options.stages);
+		if (typeof options.instantiateComponents === 'object') {
+			g.instantiateComponents(options.instantiateComponents);
+		}
+		//g._addStages(options.stages);
 		g._addDefaultStates();
 		g._setupTransitionLinks();
 		g.state.start("boot");
 		return this;
 	}
 
+	Game.prototype.instantiateComponents = function (components) {
+		var i, key, compClass;
+		for (i = 0; i < components.length; i++) {
+			
+			for (key in components[i]) {
+				compClass = components[i][key];
+				console.log("Instantiating component class", compClass, "as", key);
+				this._addComponent(key, compClass);
+			}
+		}
+		return this;
+	}
+
 	Game.prototype._addDefaultComponents = function(options){
-		this._addComponent("sounds", "SoundCannon")
-			._addComponent("images", "ImageOverseer")
-			._addComponent("state", "StateMachine")	
-			._addComponent("looper", "Looper")
+		this._addComponent("state", "StateMachine")	
+			//._addComponent("sounds", "SoundCannon")
+			//._addComponent("images", "ImageOverseer")
+			//._addComponent("state", "StateMachine")	
+			//._addComponent("looper", "Looper")
 			//._addComponent("timeCount", "TimeCount")
 			//._addComponent("incrementer", "Incrementer")
-			._addComponent("dice", "Dice")
-			._addComponent("keyboard", "Keyboard")
+			//._addComponent("dice", "Dice")
+			//._addComponent("keyboard", "Keyboard")
 			//._addComponent("physics", "Physics")
-			._addComponent("entity", "Entity")
-			._addComponent("world", "World", options.world);
+			//._addComponent("entity", "Entity")
+			//._addComponent("world", "World", options.world);
 			// *** stage?
 		return this;
 	};

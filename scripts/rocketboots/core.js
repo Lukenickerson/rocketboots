@@ -4,6 +4,7 @@ var RocketBoots = {
 	readyFunctions : [],
 	components : {},
 	loadedScripts: [],
+	_autoLoadRequirements: true,
 	_initTimer : null,
 	_MAX_ATTEMPTS : 300,
 	_BOOTING_ELEMENT_ID : "booting-up-rocket-boots",
@@ -53,14 +54,31 @@ var RocketBoots = {
 		} else {
 			return false;
 		}
-	},	
+	},
+	// TODO: Make this the default and deprecate the way its done in installComponent
+	installComponentByObject : function (options, callback) {
+		var mainClass = (options.classes.length > 0) ? options.classes[0] : (options.classes || options.className);
+		this.installComponent(options.fileName, mainClass, options[mainClass], options.requirements, callback);
+		// TODO: bring in descriptions and credits somehow
+
+	},
 	installComponent : function(fileName, componentClassName, componentClass, requirements, callback){
 		var o = this;
+		//console.log("Installing", fileName, " ...Are required components", requirements, " loaded?", o.areComponentsLoaded(requirements));
 		if (!o.areComponentsLoaded(requirements)) {
-			console.warn("Component(s) missing", requirements);
-			var compTimer = window.setTimeout(function(){ 
+			var tryAgainDelay, compTimer;
+			if (o._autoLoadRequirements) {
+				console.log(fileName, "is missing required component(s)", requirements, ". Autoloading...");
+				o.loadComponents(requirements);
+				tryAgainDelay = 100;
+			} else {
+				console.warn(fileName, "is missing required component(s)", requirements);
+				tryAgainDelay = 5000;
+			}
+			compTimer = window.setTimeout(function(){ 
 				o.installComponent(fileName, componentClassName, componentClass, requirements, callback);
-			}, 10000);
+			}, tryAgainDelay);
+
 		} else {
 			if (typeof o.components[fileName] == "undefined") {
 				o.components[fileName] = new o.Component(fileName);
@@ -70,6 +88,9 @@ var RocketBoots = {
 			}
 			o.components[fileName].name = componentClassName;
 			o.components[fileName].isInstalled = true;
+			// TODO: Add description and credits
+			//o.components[fileName].description = "";
+			//o.components[fileName].credits = "";
 			o[componentClassName] = componentClass;
 		}
 		return this;
@@ -171,6 +192,7 @@ var RocketBoots = {
 
 		if (!isJQueryUndefined) {
 			o.$ = $;
+			o.$('#' + o._BOOTING_ELEMENT_ID).show();
 		}
 		if (!isLodashUndefined) {
 			o._ = _;
@@ -190,7 +212,12 @@ var RocketBoots = {
 			if (typeof window.rb !== "undefined") {
 				o._rb = window.rb;
 			}
-			window.rb = o;	
+			window.rb = o;
+			
+			// Aliases
+			o.window = window;
+			o.document = window.document;
+
 			// Load default components
 			// TODO: make this configurable
 			this.loadComponents(["Game"]);

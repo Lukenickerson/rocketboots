@@ -1,21 +1,17 @@
 /*
-	Looper 
-	By Luke Nickerson, 2014-2015
-
-	**************** DEPRECATED ****************************
+	Loop (originally "Looper")
+	By Luke Nickerson, 2014-2016
 */
 
 (function(){
-	var myFileName = "looper";
-	var myClassName = "Looper";
+	var myName = "Loop"; // both file and class
 
 	var Loop = function(fn, delay){
-		this.fn			= fn;
+		this.set(fn, delay);
 		this.isLooping 	= false;
 		this.timer 		= 0;
 		this.iteration 	= 0;
 		//this.lastTime 	= 0;
-		this.setDelay(delay)
 		// Update certain things once every X iterations
 		this.modulusActions 	= [];
 		this.numOfModulusActions = 0;
@@ -90,6 +86,11 @@
 	}
 	*/
 	
+	Loop.prototype.setFunction = function(fn){
+		this.fn	= ((typeof fn === 'function') ? fn : function(){});
+		return this;
+	}
+
 	Loop.prototype.setDelay = function(d){
 		this.delay = d || 14;
 		// ^ Decrease delay for more fps, increase for less fps
@@ -122,11 +123,18 @@
 	{	
 		return this.modulusActions.splice(index, 1);
 	}
+
+	Loop.prototype.set = function(fn, delay) {
+		if (typeof fn !== 'function') { fn = function(){}; }
+		this.setFunction(fn)
+			.setDelay(delay);
+		return this;
+	}
 	
 	
 
 	// Install into RocketBoots if it exists, otherwise make global
 	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myFileName, myClassName, Loop);
+		RocketBoots.installComponent(myName, myName, Loop);
 	} else window[myClassName] = Loop;
 })();

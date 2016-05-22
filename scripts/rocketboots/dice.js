@@ -1,12 +1,11 @@
 /*
 	Dice 
 	Dice Class
-	By Luke Nickerson, 2014
+	By Luke Nickerson, 2014-2016
 */
 
 (function(){
-	var myFileName = "dice";
-	var myClassName = "Dice";
+	var myName = "Dice"; // file and class
 
 	var Dice = function(){
 		this.randSeed = 1;
@@ -75,6 +74,9 @@
 		return (this.roll1d(2) == 1) ? heads : tails;
 	};
 	Dice.prototype.selectRandom = function(arr){
+		if (arr.length == 0 || arr.length === undefined) {
+			return null;
+		}
 		var r = Math.floor(this.random() * arr.length);
 		return arr[r];
 	}
@@ -93,6 +95,6 @@
 
 	// Install into RocketBoots if it exists, otherwise make global
 	if (typeof RocketBoots == "object") {
-		RocketBoots.installComponent(myFileName, myClassName, Dice);
-	} else window[myClassName] = Dice;
+		RocketBoots.installComponent(myName, myName, Dice);
+	} else window[myName] = Dice;
 })();

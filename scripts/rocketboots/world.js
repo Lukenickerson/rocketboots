@@ -14,15 +14,14 @@
 		options.size.x = options.size.x || 100;
 		options.size.y = options.size.y || 100;
 
-		// Extend
-		// http://stackoverflow.com/a/15192747
+		// Extend from Entity (http://stackoverflow.com/a/15192747)
 		RocketBoots.Entity.call(this, options);
 
 		this.dimensions = options.dimensions || 2;
-		this.size = new this.Coords(options.size.x, options.size.y);
-		this.min = new this.Coords(-(this.size.x/2),-(this.size.y/2));
-		this.max = new this.Coords((this.size.x/2),(this.size.y/2));
-		//this.size = new this.Coords(600, 600);
+		this.size = new RocketBoots.Coords(options.size.x, options.size.y);
+		this.min = new RocketBoots.Coords(-(this.size.x/2),-(this.size.y/2));
+		this.max = new RocketBoots.Coords((this.size.x/2),(this.size.y/2));
+		//this.size = new RocketBoots.Coords(600, 600);
 		this.grid = {
 			size : { x: 1, y: 1 }
 		};
@@ -42,12 +41,11 @@
 		this.isBounded = options.isBounded || false;
 
 		//console.log(this instanceof World);
-	}
+	};
 
-	function initWorldPrototype () {
-		//console.log(RocketBoots.Entity);
-		World.prototype = new RocketBoots.Entity();
-		World.prototype.constructor = World;
+	component.callback = function initWorldPrototype () {
+		World.prototype = new RocketBoots.Entity();	// inherit Entity
+		World.prototype.constructor = World;		// point constructor back to self
 		// TODO: *** ^ Add some way to auto-load entity component?
 		
 		// Sets
@@ -149,7 +147,7 @@
 			}
 			var x = dice.getRandomIntegerBetween(this.min.x, this.max.x);
 			var y = dice.getRandomIntegerBetween(this.min.y, this.max.y);
-			return new this.Coords(x,y);
+			return new RocketBoots.Coords(x,y);
 		}
 		World.prototype.getRandomGridPosition = function(){
 			var randPos = this.getRandomPosition();
@@ -158,7 +156,7 @@
 		World.prototype.getCenter = function(){
 			var x = this.min.x + (this.size.x / 2);
 			var y = this.min.y + (this.size.y / 2);
-			return new this.Coords(x,y);
+			return new RocketBoots.Coords(x,y);
 		}
 		World.prototype.getNearestEntity = function(type, pos, range){
 			var nearestEnt = null;

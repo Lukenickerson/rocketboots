@@ -19,9 +19,11 @@
 		this.min 		= getDefaultNumber(options.min, 0);
 		this.max 		= getDefaultNumber(options.max, 1000000000); // 1B default
 		this.val 		= getDefaultNumber(options.val, this.min);
+		this.floor 		= Math.floor(this.val);
 		this.stepsPerSecond = getDefaultNumber(options.stepsPerSecond, 1);
 		this.lastUpdated = new Date();
 		this.mathMethodForDisplay	= (options.mathMethodForDisplay || "floor");
+		this.tip 		= (typeof options.tip === "string") ? options.tip : "";
 
 		//this.hasCalculations = (options.calcRate || options.calcValue || options.calcMax) ? true : false;
 		this.calcRate 	= (options.calcRate || undefined);
@@ -87,6 +89,7 @@
 		} else if (this.val < this.min) {
 			this.val = this.min;
 		}
+		this.floor = Math.floor(this.val);
 		return this;
 	};	
 
@@ -113,33 +116,56 @@
 
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
 	Object.defineProperty(Currency.prototype, "displayValue", { get: function() {
-		if (this.val === NaN) { console.warn("displayValue NaN"); }
-		return Math[this.mathMethodForDisplay](this.val);
+		return _getDisplayValue(this.val, this.mathMethodForDisplay);
 	}});
 	Object.defineProperty(Currency.prototype, "displayMax", { get: function() {
-		return Math[this.mathMethodForDisplay](this.max);
+		return _getDisplayValue(this.max, this.mathMethodForDisplay);
 	}});
+
+	function _getDisplayValue (n, mathMethod, div) {
+		if (n === NaN) { console.warn("display value NaN"); }
+		if (typeof div === 'undefined') {
+			if (n > 10) {
+				div = 1;
+			} else if (n < 0.01) {
+				div = 1000;
+			} else if (n < 0.1) {
+				div = 100;
+			} else {
+				div = 10;
+			}
+		}
+		return Math[mathMethod](n * div)/div;
+	}
+	function _getDisplayValueString (n, mathMethod, div) {
+		return _getDisplayValue(n, mathMethod, div).toLocaleString();
+	}
+
 
 	// FIXME: Move this to somewhere else?
 	Currency.prototype.draw = function () {
 		if (typeof this.element === 'undefined' || this.element === null) {
 			return false;
 		}
-		var ratePerSecond = Math.round(this.rate * this.stepsPerSecond * 10)/10;
+		var realRatePerSecond = this.rate * this.stepsPerSecond;
+		var ratePerSecond = _getDisplayValueString(realRatePerSecond, this.mathMethodForDisplay);
 		var plus = (ratePerSecond < 0) ? "" : "+";
-		var text = this.displayValue;
-		var html = text;
+		var text =  this.displayValue;
+		var html = '<span class="currency-val">' + text + '</span>';
 		var symbol = "";
 		
 		text += " / " + this.displayMax;
-		html += '<span class="currency-out-of">/</span><span class="currency-max">' + this.displayMax + '</span>';
+		html += '<span class="currency-out-of">/</span><span class="currency-max">' + this.displayMax.toLocaleString() + '</span>';
 
-		if (ratePerSecond != 0) {
-		 	text += " (" + plus + ratePerSecond + "/s)";
-		 	html += " (" + plus + ratePerSecond + "/s)";
+		if (realRatePerSecond != 0) {
+		 	text += " (" + plus + ratePerSecond.toLocaleString() + "/s)";
+		 	html += ' <span class="currency-rate">(' + plus + ratePerSecond.toLocaleString() + '/s)</span>';
 		}
 		if (this.symbol.length > 0 && this.symbolBefore) {
 			html = '<span class="currency-symbol">' + this.symbol + '</span>' + html;
+		}
+		if (this.tip.length > 0) {
+			html += '<span class="currency-tip">' + this.tip + '</span>';
 		}
 		this.element.innerHTML = html;
 		this.element.setAttribute("title", this.displayName + ": " + text);

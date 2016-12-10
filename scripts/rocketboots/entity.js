@@ -9,7 +9,7 @@
 	//=========================================================================
 	//==== Entity
 	
-	var Entity = function(options, world, size){
+	var Entity = component.Entity = function EntityClass (options, world, size){
 		if (typeof options === 'string') {
 			options = {name: options};
 		} else {
@@ -22,12 +22,12 @@
 		this.name 			= options.name || null;
 		this.groups			= [];
 		this.world 			= world;
-		this.stageOffset 	= new this.Coords(0,0); // for minor pixel offsets
-		this.pos 			= new this.Coords(pos.x, pos.y);
-		this.vel 			= new this.Coords(0,0);
+		this.stageOffset 	= new RocketBoots.Coords(0,0); // for minor pixel offsets
+		this.pos 			= new RocketBoots.Coords(pos.x, pos.y);
+		this.vel 			= new RocketBoots.Coords(0,0);
 		this.mass			= 1;
-		this.size 			= new this.Coords(size.x, size.y);
-		this._halfSize 		= new this.Coords(size.x/2, size.y/2);
+		this.size 			= new RocketBoots.Coords(size.x, size.y);
+		this._halfSize 		= new RocketBoots.Coords(size.x/2, size.y/2);
 		this.radius 		= parseInt(size.x/2);
 		this.image			= null;
 		this.color 			= options.color || "#666";
@@ -50,8 +50,8 @@
 	}
 	// Sets
 	Entity.prototype.setSize = function(x,y){
-		this.size.set( new this.Coords(x, y) );
-		this._halfSize.set( new this.Coords(x/2, y/2) );
+		this.size.set( new RocketBoots.Coords(x, y) );
+		this._halfSize.set( new RocketBoots.Coords(x/2, y/2) );
 	}
 	
 	// Gets
@@ -62,10 +62,10 @@
 		return (this.groups.indexOf(group) == -1) ? false : true;
 	}
 	Entity.prototype.getHeadPos = function(){
-		return new this.Coords(this.pos.x, this.pos.y + this._halfSize.y);
+		return new RocketBoots.Coords(this.pos.x, this.pos.y + this._halfSize.y);
 	};
 	Entity.prototype.getFootPos = function(){
-		return new this.Coords(this.pos.x, this.pos.y - this._halfSize.y);
+		return new RocketBoots.Coords(this.pos.x, this.pos.y - this._halfSize.y);
 	};
 	
 	// Put in / take out
@@ -172,10 +172,14 @@
 	Entity.prototype.addNewEntity = Entity.prototype.putNewIn;	
 	Entity.prototype.removeEntity = Entity.prototype.takeOut;
 
-	function initEntityPrototype () {
+/*
+// This wasn't working right. TODO: Revisit this...
+	component.callback = function initEntityPrototype () {
 		// Bring in a pointer to the Coords class from RocketBoots
+		console.log(RocketBoots.Coords)
 		Entity.prototype.Coords = (typeof RocketBoots.Coords == "function") ? RocketBoots.Coords : Coords;
 	}
+*/
 	
 
 	// Install into RocketBoots if it exists

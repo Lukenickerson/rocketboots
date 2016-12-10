@@ -4,7 +4,7 @@ var RocketBoots = {
 	readyFunctions : [],
 	components : {},
 	loadedScripts: [],
-	version: {full: "0.2.0", major: 0, minor: 2, patch: 0, codeName: "micro-city"},
+	version: {full: "0.7.0", major: 0, minor: 7, patch: 0, codeName: "sun-master"},
 	_autoLoadRequirements: true,
 	_initTimer : null,
 	_MAX_ATTEMPTS : 300,
@@ -56,43 +56,69 @@ var RocketBoots = {
 			return false;
 		}
 	},
-	installComponent : function (options, callback) {
+	installComponent : function (options, callback, attempt) {
 		// options = { fileName, classNames, requirements, description, credits }
 		var o = this;
 		var mainClassName = (typeof options.classNames === 'object' && options.classNames.length > 0) ? options.classNames[0] : (options.classNames || options.className);
 		var componentClass = options[mainClassName];
 		var requirements = options.requirements;
 		var fileName = options.fileName;
-		// TODO: bring in descriptions and credits somehow
-		if (typeof mainClassName !== 'string' || typeof componentClass !== 'function') {
-			console.error("Error installing component ", options);
+		var callbacks = [];
+		var i;
+		// Setup array of callbacks
+		if (typeof callback === 'function') { 			callbacks.push(callback); }
+		if (typeof options.callback === 'function') { 	callbacks.push(options.callback); }
+		if (typeof options.callbacks === 'object') { 	callbacks.concat(options.callbacks); }
+		// Check for possible errors
+		if (typeof mainClassName !== 'string') {
+			console.error("Error installing component: mainClassName is not a string", mainClassName, options);
+			console.log("options", options);
+			return;
+		} else if (typeof componentClass !== 'function') {
+			console.error("Error installing component: class name", mainClassName, "not found on options:", options);
+			console.log("options", options);
 			return;
 		}
 		
 		//console.log("Installing", fileName, " ...Are required components", requirements, " loaded?", o.areComponentsLoaded(requirements));
 		if (!o.areComponentsLoaded(requirements)) {
 			var tryAgainDelay, compTimer;
+
+			if (typeof attempt === "undefined") { 
+				attempt = 1; 
+			} else if (attempt > o._MAX_ATTEMPTS) {
+				console.error("Could not initialize RocketBoots: too many attempts");
+				return false;
+			} else {
+				attempt++;
+			}
+
 			if (o._autoLoadRequirements) {
 				console.log(fileName, "requires component(s)", requirements, " which aren't loaded. Autoloading...");
 				o.loadComponents(requirements);
-				tryAgainDelay = 100;
+				tryAgainDelay = 100 * attempt;
 			} else {
 				console.warn(fileName, "requires component(s)", requirements, " which aren't loaded.");
 				tryAgainDelay = 5000;
 			}
 			compTimer = window.setTimeout(function(){ 
-				o.installComponent(options, callback);
+				o.installComponent(options, callback, attempt);
 			}, tryAgainDelay);
 
 		} else {
 			if (typeof o.components[fileName] == "undefined") {
 				o.components[fileName] = new o.Component(fileName);
 			}
-			if (typeof callback === "function") {
-				callback();
+			/*
+			for (i = 0; i < callbacks.length; i++) {
+				if (typeof callbacks[i] === "function") {
+					callbacks[i]();
+				}
 			}
+			*/
 			o.components[fileName].name = mainClassName;
 			o.components[fileName].isInstalled = true;
+			o.components[fileName].callbacks = callbacks;
 			// TODO: Add description and credits
 			//o.components[fileName].description = "";
 			//o.components[fileName].credits = "";
@@ -123,22 +149,27 @@ var RocketBoots = {
 		var comp = this.getComponentByName(componentName);
 		return (comp && comp.isInstalled);
 	},
-	loadComponents : function(arr){
+	loadComponents : function(arr, path){
 		var o = this;
 		var componentName;
+		path = (typeof path === 'undefined') ? "rocketboots/" : path;
 
 		for (var i = 0, al = arr.length; i < al; i++){
 			componentName = arr[i];
 			if (typeof o.components[componentName] == "undefined") {
 				o.components[componentName] = new o.Component(componentName);
-				o.loadScript("rocketboots/" + arr[i], function(){
+				o.loadScript(path + arr[i], function(){
 					o.components[componentName].isLoaded = true;
 				});
 			} else {
-				//console.error("Component already exists", componentName);
+				//console.warn("Trying to load", componentName, "component that already exists.");
 			}
 		}
 		return this;
+	},
+	loadCustomComponents : function (arr, path) {
+		path = (typeof path === 'undefined') ? "" : path;
+		return this.loadComponents(arr, path);
 	},
 	areAllComponentsLoaded : function(){
 		var o = this;
@@ -188,7 +219,7 @@ var RocketBoots = {
 		if (typeof attempt === "undefined") { 
 			attempt = 1; 
 		} else if (attempt > o._MAX_ATTEMPTS) {
-			console.error("Could not initialize RocketBoots");
+			console.error("Could not initialize RocketBoots: too many attempts");
 			return false;
 		} else {
 			attempt++;
@@ -230,7 +261,7 @@ var RocketBoots = {
 
 			// Load required scripts
 			if (isJQueryUndefined) {
-				o.loadScript("libs/jquery-2.1.1.min", function(){
+				o.loadScript("libs/jquery-2.2.4.min", function(){
 					//o.init(1);
 				});
 			} 
@@ -240,7 +271,15 @@ var RocketBoots = {
 		}
 
 		if (o.areAllComponentsLoaded() && !areRequiredScriptsMissing) {
-			console.log("RB Init - All scripts and components are loaded.", o.loadedScripts, " \nRunning Ready functions.\n");
+			console.log("RB Init - All scripts and components are loaded.", o.loadedScripts, "\nRunning component callbacks...");
+			// TODO: These don't necessarily run in the correct order for requirements
+			o.each(o.components, function(component){
+				o.each(component.callbacks, function(callback){
+					console.log("Callback for", component.name);
+					callback(); // TODO: Make this run in the right context?
+				});
+			});
+			console.log("RB Init - Running Ready functions.\n");
 			o.$('#' + o._BOOTING_ELEMENT_ID).hide();
 			o.runReadyFunctions();
 			o.isInitialized = true;

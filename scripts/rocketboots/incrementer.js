@@ -57,12 +57,17 @@
 
 	Incrementer.prototype.calculate = function(modifiers){
 		var currencies = this.currencies;
+		var hasModifiers = (typeof modifiers === 'object' && modifiers.length > 0) ? true : false;
 		this.loopOverCurrencies(function(curr, currencyKey){
 			curr.calculate(currencies);
-			if (typeof modifiers[currencyKey] === 'object') {
-				for (var prop in modifiers[currencyKey]) {
-					curr[prop] += modifiers[currencyKey][prop];
+			if (hasModifiers) {
+			//if (currencyKey in modifiers) {
+				if (typeof modifiers[currencyKey] === 'object') {
+					for (var prop in modifiers[currencyKey]) {
+						curr[prop] += modifiers[currencyKey][prop];
+					}
 				}
+			//}
 			}
 		});
 		return this;		
